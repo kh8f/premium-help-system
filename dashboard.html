@@ -161,6 +161,7 @@
 
         <button class="btn" id="savePricingBtn" onclick="savePricing()" style="margin-top:16px;"><i class="fa-solid fa-floppy-disk"></i> حفظ ونشر بالموقع</button>
         <span id="pricingSavedMsg" style="display:none; color:#25D366; font-size:.85rem; margin-right:10px;"><i class="fa-solid fa-circle-check"></i> تم الحفظ</span>
+        <span id="pricingErrorMsg" style="display:none; color:#ff4d5e; font-size:.85rem; margin-right:10px;"><i class="fa-solid fa-circle-exclamation"></i></span>
     </div>
 
     <div class="card">
@@ -422,7 +423,12 @@
                 document.getElementById('pFamilyFeatures').value = (p.family.features || []).join('\n');
             }
             document.getElementById('pPopular').value = p.popular || 'family';
-        } catch (e) {}
+        } catch (e) {
+            // كان يُتجاهل بصمت سابقاً، فتظهر الحقول فاضية بدون أي تفسير للسبب
+            const err = document.getElementById('pricingErrorMsg');
+            err.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i> تعذر تحميل الأسعار الحالية: ' + esc(e.message || 'خطأ غير معروف') + ' — تحقق من MONGODB_URI في إعدادات Netlify';
+            err.style.display = 'inline';
+        }
     }
 
     async function savePricing() {
@@ -443,10 +449,15 @@
                 }
             };
             await api('/content', 'PUT', body, true);
+            document.getElementById('pricingErrorMsg').style.display = 'none';
             const msg = document.getElementById('pricingSavedMsg');
             msg.style.display = 'inline';
             setTimeout(() => msg.style.display = 'none', 2500);
         } catch (e) {
+            // alert() وحده كان يظهر لحظياً وقد يُفوَّت أو يُغلق بالخطأ قبل قراءته
+            const err = document.getElementById('pricingErrorMsg');
+            err.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i> فشل الحفظ: ' + esc(e.message);
+            err.style.display = 'inline';
             alert(e.message);
         }
         btn.disabled = false;
