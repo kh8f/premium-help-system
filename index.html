@@ -1262,13 +1262,25 @@
             document.getElementById('emptyState').classList.toggle('show', visibleCount === 0);
         }
 
+        /* ===== إشعار عام قابل لإعادة الاستخدام ===== */
+        function showToast(message, isError) {
+            const toast = document.getElementById('toast');
+            const icon = toast.querySelector('i');
+            toast.lastChild.nodeType === 3
+                ? (toast.lastChild.textContent = ' ' + message)
+                : toast.appendChild(document.createTextNode(' ' + message));
+            if (icon) icon.className = isError ? 'fa-solid fa-circle-exclamation' : 'fa-solid fa-circle-check';
+            toast.style.borderColor = isError ? 'rgba(255,15,43,0.45)' : 'rgba(242, 193, 78, 0.35)';
+            toast.classList.add('show');
+            clearTimeout(showToast._t);
+            showToast._t = setTimeout(() => toast.classList.remove('show'), 3200);
+        }
+
         /* ===== نسخ الرابط + كونفيتي ===== */
         function copyLink(id, evt) {
             const url = window.location.href.split('#')[0] + '#' + id;
             navigator.clipboard.writeText(url).then(() => {
-                const toast = document.getElementById('toast');
-                toast.classList.add('show');
-                setTimeout(() => toast.classList.remove('show'), 2200);
+                showToast('تم نسخ الرابط بنجاح');
                 if (evt) burstConfetti(evt.clientX, evt.clientY);
             });
         }
@@ -1375,7 +1387,9 @@
                 document.getElementById('indivCard').classList.toggle('popular', popular === 'individual');
                 document.getElementById('familyCard').classList.toggle('popular', popular === 'family');
             } catch (e) {
-                // لو فشل التحميل، تبقى القيم الافتراضية بالـ HTML كما هي
+                // لو فشل التحميل، تبقى القيم الافتراضية بالـ HTML كما هي (رمز -- فقط)
+                // نسجل السبب الحقيقي في الكونسول عشان يكون واضح أثناء التشخيص
+                console.error('loadPricingContent failed:', e.message);
             }
         }
 
@@ -1785,7 +1799,11 @@
                 window.history.replaceState({}, document.title, window.location.pathname + window.location.hash);
                 if (!currentUser.nickname) openNicknameModal();
             } catch (e) {
-                // الرابط مستخدم من قبل أو غير صالح - نتجاهل بصمت
+                // الرابط مستخدم من قبل، منتهي، أو غير صالح - كان يُتجاهل بصمت
+                // وهذا هو سبب ظهور واجهة "تسجيل الدخول" الافتراضية بدون أي توضيح للسبب
+                console.error('quicklink failed:', e.message);
+                showToast('الرابط السريع غير صالح أو استُخدم من قبل (كل رابط يعمل لمرة واحدة فقط) - سجّل الدخول يدوياً', true);
+                window.history.replaceState({}, document.title, window.location.pathname + window.location.hash);
             }
         }
 
@@ -1818,4 +1836,3 @@
     </script>
 </body>
 </html>
-
