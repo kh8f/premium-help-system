@@ -1,0 +1,10 @@
+{
+  "name": "premiumhelp-backend",
+  "version": "1.0.0",
+  "private": true,
+  "description": "باك اند مركز المساعدة (Netlify Functions + MongoDB)",
+  "dependencies": {
+    "mongodb": "^6.9.0",
+    "bcryptjs": "^2.4.3"
+  }
+}

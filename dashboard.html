@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>لوحة التحكم | مركز المساعدة</title>
+
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%23ff0f2b'/%3E%3Cstop offset='1' stop-color='%23f2c14e'/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx='32' cy='32' r='30' fill='%230c0c0d' stroke='url(%23g)' stroke-width='3'/%3E%3Cpath d='M26 20 L26 44 L46 32 Z' fill='url(%23g)'/%3E%3C/svg%3E">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@500;600;700&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+    :root {
+        --bg: #09090a; --surface: rgba(255,255,255,.045); --surface-hover: rgba(255,255,255,.075);
+        --border: rgba(255,255,255,.09); --border-hover: rgba(255,255,255,.18);
+        --red: #ff0f2b; --red-soft: #ff4d5e; --gold: #f2c14e;
+        --text: #f6f6f8; --text-dim: #93949c; --text-dimmer: #5f6067;
+        --elevated: #17181a; --input-bg: rgba(255,255,255,.035);
+        --radius-lg: 20px; --radius-sm: 12px; --ease: cubic-bezier(.22,1,.36,1);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+        font-family: 'Tajawal', sans-serif; background-color: var(--bg); color: var(--text);
+        min-height: 100vh; line-height: 1.75; -webkit-font-smoothing: antialiased;
+        background-image: radial-gradient(ellipse 900px 500px at 50% -10%, rgba(255,15,43,.16), transparent 60%),
+                           radial-gradient(ellipse 600px 400px at 100% 20%, rgba(242,193,78,.05), transparent 60%);
+        background-repeat: no-repeat;
+    }
+    h1,h2,h3 { font-family: 'IBM Plex Sans Arabic', 'Tajawal', sans-serif; }
+
+    /* ===== شاشة الدخول ===== */
+    #gate { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 1.5rem; }
+    .gate-box {
+        background: var(--elevated); border: 1px solid var(--border); border-radius: var(--radius-lg);
+        padding: 34px 28px; max-width: 380px; width: 100%; text-align: center;
+    }
+    .gate-icon {
+        width: 60px; height: 60px; border-radius: 50%; margin: 0 auto 18px; display: flex; align-items: center; justify-content: center;
+        background: linear-gradient(135deg, rgba(255,15,43,.18), rgba(242,193,78,.14)); border: 1px solid var(--border-hover); color: var(--gold); font-size: 1.4rem;
+    }
+    .gate-box h1 { font-size: 1.25rem; margin-bottom: 6px; }
+    .gate-box p { color: var(--text-dim); font-size: .88rem; margin-bottom: 20px; }
+    .gate-box input {
+        width: 100%; padding: 13px 16px; border-radius: 12px; border: 1px solid var(--border); background: var(--input-bg);
+        color: var(--text); font-size: 1rem; text-align: center; letter-spacing: 1px; outline: none; margin-bottom: 12px;
+        font-family: 'Tajawal', sans-serif;
+    }
+    .gate-box input:focus { border-color: var(--gold); }
+    .gate-box button {
+        width: 100%; padding: 13px; border-radius: 12px; border: none; cursor: pointer; font-weight: 700;
+        color: #fff; background: linear-gradient(90deg, var(--red), var(--red-soft)); font-family: 'Tajawal', sans-serif; font-size: .95rem;
+    }
+    .gate-msg { font-size: .82rem; margin-top: 12px; color: var(--red-soft); min-height: 1em; }
+
+    /* ===== الداشبورد ===== */
+    #dash { display: none; max-width: 1000px; margin: 0 auto; padding: 2rem 1.25rem 4rem; }
+    .dash-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem; flex-wrap: wrap; gap: 10px; }
+    .dash-head h1 { font-size: 1.5rem; }
+    .dash-head .sub { color: var(--text-dim); font-size: .85rem; }
+    .logout-link { color: var(--text-dimmer); font-size: .82rem; cursor: pointer; background: none; border: none; }
+    .logout-link:hover { color: var(--red-soft); }
+
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 22px; margin-bottom: 20px; }
+    .card h2 { font-size: 1.05rem; display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
+    .card h2 i { color: var(--gold); }
+
+    .btn { display: inline-flex; align-items: center; gap: 8px; padding: 11px 20px; border-radius: 50px; border: none; cursor: pointer;
+        background: linear-gradient(90deg, var(--red), var(--red-soft)); color: #fff; font-weight: 700; font-size: .88rem; font-family: 'Tajawal', sans-serif; }
+    .btn:hover { opacity: .92; }
+    .btn:disabled { opacity: .5; cursor: not-allowed; }
+
+    .new-account-result { margin-top: 16px; padding: 16px; background: var(--input-bg); border: 1px dashed var(--border-hover); border-radius: 14px; display: none; }
+    .kv-row { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); font-size: .88rem; }
+    .kv-row:last-child { border-bottom: none; }
+    .kv-row .k { color: var(--text-dim); }
+    .kv-row .v { font-family: monospace; font-weight: 700; direction: ltr; }
+    .copy-mini { background: none; border: none; color: var(--text-dimmer); cursor: pointer; margin-right: 6px; }
+    .copy-mini:hover { color: var(--gold); }
+    .del-mini { background: none; border: none; color: var(--text-dimmer); cursor: pointer; font-size: .85rem; }
+    .del-mini:hover { color: var(--red-soft); }
+
+    table { width: 100%; border-collapse: collapse; font-size: .85rem; }
+    th, td { text-align: right; padding: 9px 8px; border-bottom: 1px solid var(--border); }
+    th { color: var(--text-dim); font-weight: 600; font-size: .8rem; }
+    td.pos { color: #25D366; font-weight: 700; }
+    td.neg { color: var(--red-soft); font-weight: 700; }
+
+    .list-item { padding: 13px 0; border-bottom: 1px solid var(--border); }
+    .list-item:last-child { border-bottom: none; }
+    .li-top { display: flex; justify-content: space-between; font-size: .82rem; color: var(--text-dim); margin-bottom: 4px; }
+    .li-top strong { color: var(--gold); }
+    .empty-note { color: var(--text-dimmer); font-size: .85rem; text-align: center; padding: 1rem; }
+    .avatar-mini { width: 26px; height: 26px; border-radius: 50%; display: inline-flex; vertical-align: middle; margin-left: 6px; }
+
+    ::-webkit-scrollbar { width: 8px; } ::-webkit-scrollbar-thumb { background: var(--border-hover); border-radius: 10px; }
+</style>
+</head>
+<body>
+
+<div id="gate">
+    <div class="gate-box">
+        <div class="gate-icon"><i class="fa-solid fa-lock"></i></div>
+        <h1>لوحة التحكم</h1>
+        <p>كلمة المرور ثابتة، اطلبها من صاحب الموقع</p>
+        <input type="password" id="gatePassword" placeholder="كلمة المرور" onkeydown="if(event.key==='Enter') tryEnter()">
+        <button onclick="tryEnter()">دخول</button>
+        <p class="gate-msg" id="gateMsg"></p>
+    </div>
+</div>
+
+<div id="dash">
+    <div class="dash-head">
+        <div>
+            <h1>لوحة التحكم</h1>
+            <p class="sub">مركز المساعدة - يوتيوب بريميوم</p>
+        </div>
+        <button class="logout-link" onclick="doLogout()"><i class="fa-solid fa-arrow-right-from-bracket"></i> تسجيل الخروج</button>
+    </div>
+
+    <div class="card">
+        <h2><i class="fa-solid fa-user-plus"></i> إنشاء حساب جديد</h2>
+        <p style="color:var(--text-dim); font-size:.85rem; margin-bottom:14px;">يتولد اسم مستخدم وكلمة مرور ورابط دخول سريع (يعمل مرة واحدة فقط) — أرسلهم للشخص المطلوب.</p>
+        <button class="btn" id="createBtn" onclick="createAccount()"><i class="fa-solid fa-plus"></i> إنشاء حساب</button>
+        <div class="new-account-result" id="newAccountResult"></div>
+    </div>
+
+    <div class="card">
+        <h2><i class="fa-solid fa-tags"></i> إدارة الأسعار (تظهر بالموقع مباشرة)</h2>
+        <p style="color:var(--text-dim); font-size:.85rem; margin-bottom:18px;">عدّل السعر والوصف ثم احفظ — تتحدث بالموقع الرئيسي فوراً لأي زائر جديد.</p>
+
+        <label style="font-size:.78rem; color:var(--text-dim); display:block; margin-bottom:4px;">شارة "الأكثر توفيراً" تظهر على:</label>
+        <select id="pPopular" style="padding:10px 12px; border-radius:10px; border:1px solid var(--border); background:var(--input-bg); color:var(--text); margin-bottom:18px; font-family:'Tajawal',sans-serif;">
+            <option value="individual">الباقة الفردية</option>
+            <option value="family">الباقة العائلية</option>
+            <option value="none">بدون شارة</option>
+        </select>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px;">
+            <div>
+                <h3 style="font-size:.95rem; margin-bottom:10px; color:var(--red-soft);"><i class="fa-solid fa-user"></i> الاشتراك الفردي</h3>
+                <label style="font-size:.78rem; color:var(--text-dim); display:block; margin-bottom:4px;">السعر (بدون كلمة "ريال")</label>
+                <input type="text" id="pIndivPrice" placeholder="مثال: 25" style="width:100%; padding:10px 12px; border-radius:10px; border:1px solid var(--border); background:var(--input-bg); color:var(--text); margin-bottom:10px; font-family:'Tajawal',sans-serif;">
+                <label style="font-size:.78rem; color:var(--text-dim); display:block; margin-bottom:4px;">الوصف المختصر (يظهر تحت السعر)</label>
+                <input type="text" id="pIndivNote" placeholder="تفعيل على حسابك الشخصي مباشرة" style="width:100%; padding:10px 12px; border-radius:10px; border:1px solid var(--border); background:var(--input-bg); color:var(--text); margin-bottom:10px; font-family:'Tajawal',sans-serif;">
+                <label style="font-size:.78rem; color:var(--text-dim); display:block; margin-bottom:4px;">المميزات (سطر لكل ميزة)</label>
+                <textarea id="pIndivFeatures" rows="4" style="width:100%; padding:10px 12px; border-radius:10px; border:1px solid var(--border); background:var(--input-bg); color:var(--text); resize:vertical;"></textarea>
+            </div>
+            <div>
+                <h3 style="font-size:.95rem; margin-bottom:10px; color:var(--gold);"><i class="fa-solid fa-users"></i> الاشتراك العائلي</h3>
+                <label style="font-size:.78rem; color:var(--text-dim); display:block; margin-bottom:4px;">السعر (بدون كلمة "ريال")</label>
+                <input type="text" id="pFamilyPrice" placeholder="مثال: 15" style="width:100%; padding:10px 12px; border-radius:10px; border:1px solid var(--border); background:var(--input-bg); color:var(--text); margin-bottom:10px; font-family:'Tajawal',sans-serif;">
+                <label style="font-size:.78rem; color:var(--text-dim); display:block; margin-bottom:4px;">الوصف المختصر (يظهر تحت السعر)</label>
+                <input type="text" id="pFamilyNote" placeholder="دعوة ضمن عائلة، حتى 5 أفراد إضافيين" style="width:100%; padding:10px 12px; border-radius:10px; border:1px solid var(--border); background:var(--input-bg); color:var(--text); margin-bottom:10px; font-family:'Tajawal',sans-serif;">
+                <label style="font-size:.78rem; color:var(--text-dim); display:block; margin-bottom:4px;">المميزات (سطر لكل ميزة)</label>
+                <textarea id="pFamilyFeatures" rows="4" style="width:100%; padding:10px 12px; border-radius:10px; border:1px solid var(--border); background:var(--input-bg); color:var(--text); resize:vertical;"></textarea>
+            </div>
+        </div>
+
+        <button class="btn" id="savePricingBtn" onclick="savePricing()" style="margin-top:16px;"><i class="fa-solid fa-floppy-disk"></i> حفظ ونشر بالموقع</button>
+        <span id="pricingSavedMsg" style="display:none; color:#25D366; font-size:.85rem; margin-right:10px;"><i class="fa-solid fa-circle-check"></i> تم الحفظ</span>
+    </div>
+
+    <div class="card">
+        <h2><i class="fa-brands fa-whatsapp"></i> حملة رسائل واتساب</h2>
+        <p style="color:var(--text-dim); font-size:.85rem; margin-bottom:14px;">
+            الصق أرقام العملاء (رقم في كل سطر)، اكتب نص الرسالة، واضغط توليد. لكل رقم بيتولد حساب دخول سريع خاص فيه ويندمج رابطه بالرسالة تلقائياً. بعدها تفتح كل محادثة وترسلها بنفسك يدوياً (نقرة وحدة) — بدون أي أتمتة، عشان ما يصير حظر لرقمك.
+        </p>
+
+        <label style="font-size:.8rem; color:var(--text-dim); display:block; margin-bottom:6px;">أرقام العملاء (رقم في كل سطر — مثال: 0555555555 أو 966555555555)</label>
+        <textarea id="waNumbers" rows="5" placeholder="0555555555&#10;0566666666&#10;966577777777" style="width:100%; padding:12px; border-radius:12px; border:1px solid var(--border); background:var(--input-bg); color:var(--text); font-family:monospace; direction:ltr; text-align:left; margin-bottom:12px; resize:vertical;"></textarea>
+
+        <label style="font-size:.8rem; color:var(--text-dim); display:block; margin-bottom:6px;">نص الرسالة (اكتب {link} في المكان اللي تبي رابط الدخول السريع يظهر فيه — لو ما كتبتها بينضاف بالآخر تلقائياً)</label>
+        <textarea id="waMessage" rows="6" style="width:100%; padding:12px; border-radius:12px; border:1px solid var(--border); background:var(--input-bg); color:var(--text); margin-bottom:14px; resize:vertical;">مرحبا يا مشتركينا الأعزاء !
+
+لقد أنشأنا موقع جديد خاص بنا للأسئلة المتكررة والمشاكل، وأضفنا به تقييمات.
+تقدر تدخل الموقع عبر الرابط ذا وتشوفه، وفي نهايته أزرار للاقتراحات والتقييمات، تقدر تقيّمنا أو تعطينا اقتراحات ونحاول نطبقها لكم 🙏
+
+{link}</textarea>
+
+        <button class="btn" id="waGenerateBtn" onclick="generateWaCampaign()"><i class="fa-solid fa-wand-magic-sparkles"></i> توليد الحملة</button>
+        <button class="btn" id="waResetBtn" onclick="resetWaCampaign()" style="background:transparent; border:1px solid var(--border-hover); color:var(--text-dim); display:none;"><i class="fa-solid fa-rotate-left"></i> حملة جديدة</button>
+
+        <p id="waProgress" style="color:var(--text-dim); font-size:.85rem; margin-top:14px; display:none;"></p>
+        <div id="waQueue" style="margin-top:10px;"></div>
+    </div>
+
+    <div class="card">
+        <h2><i class="fa-solid fa-chart-column"></i> الحسابات الجديدة (آخر 14 يوم)</h2>
+        <div id="signupSparkline" style="display:flex; align-items:flex-end; gap:4px; height:90px; margin-top:10px;"></div>
+    </div>
+
+    <div class="card">
+        <h2><i class="fa-solid fa-users"></i> الحسابات</h2>
+        <div id="accountsList"></div>
+        <p class="empty-note" id="accountsEmpty" style="display:none;">لا توجد حسابات بعد</p>
+    </div>
+
+    <div class="card">
+        <h2><i class="fa-solid fa-star"></i> إحصائية "هل كان الشرح مفيداً" (مجهولة، بدون حساب)</h2>
+        <table id="feedbackTable">
+            <thead><tr><th>السؤال</th><th>👍 مفيد</th><th>👎 غير مفيد</th></tr></thead>
+            <tbody id="feedbackBody"></tbody>
+        </table>
+        <p class="empty-note" id="feedbackEmpty" style="display:none;">لا توجد بيانات بعد</p>
+    </div>
+
+    <div class="card">
+        <h2><i class="fa-regular fa-star"></i> تقييمات المستخدمين (5 نجوم)</h2>
+        <div id="ratingsList"></div>
+        <p class="empty-note" id="ratingsEmpty" style="display:none;">لا توجد تقييمات بعد</p>
+    </div>
+
+    <div class="card">
+        <h2><i class="fa-solid fa-lightbulb"></i> الاقتراحات (خاصة بالداشبورد فقط)</h2>
+        <div id="suggestionsList"></div>
+        <p class="empty-note" id="suggestionsEmpty" style="display:none;">لا توجد اقتراحات بعد</p>
+    </div>
+</div>
+
+<script>
+    const API_BASE = '/api';
+    let dashToken = sessionStorage.getItem('ph_dash_token') || null;
+
+    function avatarGradient(seed) {
+        const palettes = [['#ff0f2b','#f2c14e'],['#f2c14e','#ff4d5e'],['#8e2de2','#ff0f2b'],['#0fb5ff','#f2c14e'],['#25D366','#0fb5ff']];
+        let hash = 0; for (let i=0;i<seed.length;i++) hash = seed.charCodeAt(i) + ((hash<<5)-hash);
+        return palettes[Math.abs(hash) % palettes.length];
+    }
+    function avatarSVG(name, size) {
+        const initial = (name||'؟').trim().charAt(0).toUpperCase();
+        const [c1,c2] = avatarGradient(name||'زائر');
+        const gid = 'g'+Math.random().toString(36).slice(2,8);
+        return `<svg viewBox="0 0 40 40" width="${size}" height="${size}"><defs><linearGradient id="${gid}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${c1}"/><stop offset="1" stop-color="${c2}"/></linearGradient></defs><circle cx="20" cy="20" r="20" fill="url(#${gid})"/><text x="20" y="27" font-size="17" text-anchor="middle" fill="#fff" font-family="IBM Plex Sans Arabic, sans-serif" font-weight="700">${initial}</text></svg>`;
+    }
+    function esc(s) { const d = document.createElement('div'); d.textContent = s||''; return d.innerHTML; }
+    function fmtDate(iso) { try { return new Date(iso).toLocaleString('ar-SA', {day:'numeric', month:'short', hour:'2-digit', minute:'2-digit'}); } catch(e){ return ''; } }
+
+    async function api(path, method, body, needAuth) {
+        const headers = { 'Content-Type': 'application/json' };
+        if (needAuth && dashToken) headers['Authorization'] = 'Bearer ' + dashToken;
+        const res = await fetch(API_BASE + path, { method, headers, body: body ? JSON.stringify(body) : undefined });
+        let data = {};
+        try { data = await res.json(); } catch (e) {}
+        if (!res.ok) throw new Error((data.error || 'خطأ') + (data.detail ? (' — ' + data.detail) : '') + (!data.error ? ` (${res.status} ${res.statusText})` : ''));
+        return data;
+    }
+
+    async function tryEnter() {
+        const pass = document.getElementById('gatePassword').value;
+        const msg = document.getElementById('gateMsg');
+        msg.textContent = '';
+        try {
+            const data = await api('/dashboard-auth', 'POST', { password: pass }, false);
+            dashToken = data.token;
+            sessionStorage.setItem('ph_dash_token', dashToken);
+            enterDashboard();
+        } catch (e) {
+            msg.textContent = 'خطأ: ' + e.message;
+        }
+    }
+
+    function doLogout() {
+        sessionStorage.removeItem('ph_dash_token');
+        dashToken = null;
+        document.getElementById('dash').style.display = 'none';
+        document.getElementById('gate').style.display = 'flex';
+    }
+
+    function enterDashboard() {
+        document.getElementById('gate').style.display = 'none';
+        document.getElementById('dash').style.display = 'block';
+        loadAccounts();
+        loadFeedbackStats();
+        loadRatings();
+        loadSuggestions();
+        loadPricing();
+    }
+
+    async function createAccount() {
+        const btn = document.getElementById('createBtn');
+        btn.disabled = true;
+        try {
+            const data = await api('/register', 'POST', {}, true);
+            const box = document.getElementById('newAccountResult');
+            box.style.display = 'block';
+            box.innerHTML = `
+                <div class="kv-row"><span class="k">اسم المستخدم</span><span class="v">${esc(data.username)} <button class="copy-mini" onclick="navigator.clipboard.writeText('${esc(data.username)}')"><i class="fa-regular fa-copy"></i></button></span></div>
+                <div class="kv-row"><span class="k">كلمة المرور</span><span class="v">${esc(data.password)} <button class="copy-mini" onclick="navigator.clipboard.writeText('${esc(data.password)}')"><i class="fa-regular fa-copy"></i></button></span></div>
+                <div class="kv-row"><span class="k">رابط دخول سريع (لمرة واحدة)</span><span class="v" style="font-size:.75rem;">${esc(data.quickLink)} <button class="copy-mini" onclick="navigator.clipboard.writeText('${esc(data.quickLink)}')"><i class="fa-regular fa-copy"></i></button></span></div>
+            `;
+            loadAccounts();
+        } catch (e) {
+            alert(e.message);
+        }
+        btn.disabled = false;
+    }
+
+    async function loadAccounts() {
+        try {
+            const data = await api('/accounts', 'GET', null, true);
+            const list = document.getElementById('accountsList');
+            const users = data.users || [];
+            renderSignupSparkline(users);
+            if (!users.length) { document.getElementById('accountsEmpty').style.display = 'block'; list.innerHTML = ''; return; }
+            document.getElementById('accountsEmpty').style.display = 'none';
+            list.innerHTML = users.map(u => `
+                <div class="list-item">
+                    <div class="li-top">
+                        <span>${avatarSVG(u.nickname || u.username, 26)} <strong>${esc(u.username)}</strong>${u.nickname ? ' — ' + esc(u.nickname) : ' (بدون اسم مستعار بعد)'}</span>
+                        <span>
+                            ${fmtDate(u.createdAt)}
+                            <button class="del-mini" title="حذف الحساب" onclick="deleteAccount('${esc(u.username)}')"><i class="fa-solid fa-trash"></i></button>
+                        </span>
+                    </div>
+                </div>
+            `).join('');
+        } catch (e) {}
+    }
+
+    function renderSignupSparkline(users) {
+        const box = document.getElementById('signupSparkline');
+        const days = [];
+        for (let i = 13; i >= 0; i--) {
+            const d = new Date();
+            d.setDate(d.getDate() - i);
+            days.push({ key: d.toISOString().slice(0, 10), label: d.toLocaleDateString('ar-SA', { day: 'numeric', month: 'numeric' }), count: 0 });
+        }
+        users.forEach(u => {
+            if (!u.createdAt) return;
+            const key = new Date(u.createdAt).toISOString().slice(0, 10);
+            const day = days.find(d => d.key === key);
+            if (day) day.count++;
+        });
+        const max = Math.max(1, ...days.map(d => d.count));
+        box.innerHTML = days.map(d => `
+            <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:4px;" title="${d.label}: ${d.count} حساب">
+                <div style="width:100%; max-width:22px; height:${Math.max(4, (d.count / max) * 70)}px; border-radius:5px 5px 0 0; background:linear-gradient(180deg, var(--gold), var(--red-soft));"></div>
+                <span style="font-size:.62rem; color:var(--text-dim); writing-mode:vertical-rl;">${d.count}</span>
+            </div>
+        `).join('');
+    }
+
+    async function deleteAccount(username) {
+        if (!confirm('متأكد تبي تحذف حساب "' + username + '"؟ بيتم تسجيل خروجه فوراً.')) return;
+        try {
+            await api('/accounts', 'DELETE', { username }, true);
+            loadAccounts();
+        } catch (e) { alert(e.message); }
+    }
+
+    async function loadFeedbackStats() {
+        try {
+            const data = await api('/feedback', 'GET', null, true);
+            const body = document.getElementById('feedbackBody');
+            const rows = Object.entries(data.stats || {});
+            if (!rows.length) { document.getElementById('feedbackEmpty').style.display = 'block'; return; }
+            body.innerHTML = rows.map(([q, s]) => `<tr><td>${esc(q)}</td><td class="pos">${s.positive||0}</td><td class="neg">${s.negative||0}</td></tr>`).join('');
+        } catch (e) {}
+    }
+
+    async function loadRatings() {
+        try {
+            const data = await api('/ratings', 'GET', null, false);
+            const list = document.getElementById('ratingsList');
+            const ratings = data.ratings || [];
+            if (!ratings.length) { document.getElementById('ratingsEmpty').style.display = 'block'; return; }
+            list.innerHTML = ratings.map(r => `
+                <div class="list-item">
+                    <div class="li-top">
+                        <span>${avatarSVG(r.nickname,26)} <strong>${esc(r.nickname)}</strong> — ${'★'.repeat(r.stars)}${'☆'.repeat(5-r.stars)}</span>
+                        <span>
+                            ${fmtDate(r.createdAt)}
+                            <button class="del-mini" title="حذف التقييم" onclick="deleteRating('${r._id}')"><i class="fa-solid fa-trash"></i></button>
+                        </span>
+                    </div>
+                    ${r.description ? `<div>${esc(r.description)}</div>` : ''}
+                </div>
+            `).join('');
+        } catch (e) {}
+    }
+
+    async function deleteRating(id) {
+        if (!confirm('متأكد تبي تحذف هذا التقييم؟')) return;
+        try {
+            await api('/ratings', 'DELETE', { id }, true);
+            loadRatings();
+        } catch (e) { alert(e.message); }
+    }
+
+    async function loadSuggestions() {
+        try {
+            const data = await api('/suggestions', 'GET', null, true);
+            const list = document.getElementById('suggestionsList');
+            const items = data.suggestions || [];
+            if (!items.length) { document.getElementById('suggestionsEmpty').style.display = 'block'; return; }
+            list.innerHTML = items.map(s => `
+                <div class="list-item">
+                    <div class="li-top"><strong>${esc(s.nickname)}</strong><span>${fmtDate(s.createdAt)}</span></div>
+                    <div>${esc(s.text)}</div>
+                </div>
+            `).join('');
+        } catch (e) {}
+    }
+
+    /* ===== إدارة الأسعار ===== */
+    async function loadPricing() {
+        try {
+            const res = await fetch(API_BASE + '/content');
+            const data = await res.json();
+            const p = data.pricing || {};
+            if (p.individual) {
+                document.getElementById('pIndivPrice').value = p.individual.price === '—' ? '' : (p.individual.price || '');
+                document.getElementById('pIndivNote').value = p.individual.note || '';
+                document.getElementById('pIndivFeatures').value = (p.individual.features || []).join('\n');
+            }
+            if (p.family) {
+                document.getElementById('pFamilyPrice').value = p.family.price === '—' ? '' : (p.family.price || '');
+                document.getElementById('pFamilyNote').value = p.family.note || '';
+                document.getElementById('pFamilyFeatures').value = (p.family.features || []).join('\n');
+            }
+            document.getElementById('pPopular').value = p.popular || 'family';
+        } catch (e) {}
+    }
+
+    async function savePricing() {
+        const btn = document.getElementById('savePricingBtn');
+        btn.disabled = true;
+        try {
+            const body = {
+                popular: document.getElementById('pPopular').value,
+                individual: {
+                    price: document.getElementById('pIndivPrice').value.trim() || '—',
+                    note: document.getElementById('pIndivNote').value.trim(),
+                    features: document.getElementById('pIndivFeatures').value.split('\n').map(s => s.trim()).filter(Boolean)
+                },
+                family: {
+                    price: document.getElementById('pFamilyPrice').value.trim() || '—',
+                    note: document.getElementById('pFamilyNote').value.trim(),
+                    features: document.getElementById('pFamilyFeatures').value.split('\n').map(s => s.trim()).filter(Boolean)
+                }
+            };
+            await api('/content', 'PUT', body, true);
+            const msg = document.getElementById('pricingSavedMsg');
+            msg.style.display = 'inline';
+            setTimeout(() => msg.style.display = 'none', 2500);
+        } catch (e) {
+            alert(e.message);
+        }
+        btn.disabled = false;
+    }
+
+    /* ===== حملة رسائل واتساب ===== */
+    let waCampaign = [];
+
+    function normalizePhone(raw) {
+        let n = raw.trim().replace(/[\s\-\(\)]/g, '');
+        if (!n) return null;
+        n = n.replace(/^\+/, '');
+        if (n.startsWith('00')) n = n.slice(2);
+        if (n.startsWith('0')) n = '966' + n.slice(1); // افتراضياً أرقام سعودية تبدأ بصفر
+        if (!/^\d{8,15}$/.test(n)) return null;
+        return n;
+    }
+
+    async function generateWaCampaign() {
+        const rawNumbers = document.getElementById('waNumbers').value.split('\n').map(s => s.trim()).filter(Boolean);
+        const template = document.getElementById('waMessage').value;
+        if (!rawNumbers.length) { alert('الصق رقم واحد على الأقل'); return; }
+        if (!template.trim()) { alert('اكتب نص الرسالة'); return; }
+
+        const numbers = [];
+        const invalid = [];
+        rawNumbers.forEach(r => {
+            const n = normalizePhone(r);
+            if (n) numbers.push(n); else invalid.push(r);
+        });
+        if (invalid.length) {
+            if (!confirm(`${invalid.length} رقم ما قدرنا نتعرف عليه وبيتجاهلوا:\n${invalid.join('\n')}\n\nتكمل بالباقي؟`)) return;
+        }
+        if (!numbers.length) { alert('ما فيه أرقام صالحة'); return; }
+
+        const btn = document.getElementById('waGenerateBtn');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> جاري التوليد...';
+
+        waCampaign = [];
+        for (const number of numbers) {
+            try {
+                const data = await api('/register', 'POST', {}, true);
+                const msg = template.includes('{link}') ? template.replace('{link}', data.quickLink) : (template + '\n\n' + data.quickLink);
+                waCampaign.push({ number, message: msg, sent: false, username: data.username });
+            } catch (e) {
+                waCampaign.push({ number, message: null, sent: false, error: e.message });
+            }
+        }
+
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fa-solid fa-wand-magic-sparkles"></i> توليد الحملة';
+        document.getElementById('waResetBtn').style.display = 'inline-flex';
+        document.getElementById('waNumbers').closest('.card').querySelectorAll('textarea, #waGenerateBtn').forEach(el => el.disabled = true);
+        renderWaQueue();
+    }
+
+    function renderWaQueue() {
+        const sentCount = waCampaign.filter(c => c.sent).length;
+        const progress = document.getElementById('waProgress');
+        progress.style.display = 'block';
+        progress.textContent = `تم إرسال ${sentCount} من ${waCampaign.length}`;
+
+        const list = document.getElementById('waQueue');
+        list.innerHTML = waCampaign.map((c, i) => {
+            if (c.error) {
+                return `<div class="list-item"><div class="li-top"><span style="direction:ltr;">${esc(c.number)}</span><span style="color:var(--red-soft);">فشل: ${esc(c.error)}</span></div></div>`;
+            }
+            return `
+                <div class="list-item" style="display:flex; align-items:center; justify-content:space-between; gap:10px;">
+                    <span style="direction:ltr; font-family:monospace;">${esc(c.number)}</span>
+                    ${c.sent
+                        ? '<span style="color:#25D366; font-weight:700; font-size:.85rem;"><i class="fa-solid fa-circle-check"></i> تم الإرسال</span>'
+                        : `<button class="btn" style="padding:8px 16px; font-size:.8rem;" onclick="openWaAndMark(${i})"><i class="fa-brands fa-whatsapp"></i> فتح المحادثة</button>`
+                    }
+                </div>
+            `;
+        }).join('');
+    }
+
+    function openWaAndMark(i) {
+        const c = waCampaign[i];
+        if (!c || c.sent) return;
+        window.open('https://wa.me/' + c.number + '?text=' + encodeURIComponent(c.message), '_blank');
+        c.sent = true;
+        renderWaQueue();
+        // ينتقل تلقائياً لأول واحد ما انفتح بعد
+        const next = document.querySelector('#waQueue button.btn');
+        if (next) setTimeout(() => next.scrollIntoView({ behavior: 'smooth', block: 'center' }), 300);
+    }
+
+    function resetWaCampaign() {
+        if (waCampaign.some(c => !c.sent) && !confirm('فيه أرقام ما أرسلتها بعد بهذي الحملة، تبي تبدأ حملة جديدة وتفقدها؟')) return;
+        waCampaign = [];
+        document.getElementById('waNumbers').value = '';
+        document.getElementById('waQueue').innerHTML = '';
+        document.getElementById('waProgress').style.display = 'none';
+        document.getElementById('waResetBtn').style.display = 'none';
+        document.getElementById('waNumbers').closest('.card').querySelectorAll('textarea, #waGenerateBtn').forEach(el => el.disabled = false);
+    }
+
+    window.onload = function () {
+        if (dashToken) enterDashboard();
+    };
+</script>
+</body>
+</html>
